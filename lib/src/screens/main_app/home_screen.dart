@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:manifestacao_369/src/core/theme/app_theme.dart';
 import 'package:manifestacao_369/src/services/auth_service.dart';
 import 'package:manifestacao_369/src/widgets/shared/mystic_background.dart';
+import 'package:manifestacao_369/src/screens/phrase/phrase_screen.dart';
 import 'ritual_screen.dart';
 import 'calendar_screen.dart';
 import 'diary_screen.dart';
@@ -54,12 +55,10 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildNavigationList(BuildContext context) {
-    // Usando ListView para o caso da lista crescer ou para telas menores
     return ListView(
       padding: EdgeInsets.zero,
       children: [
-        // TODO: A tela "Criar/Editar Frase" será criada no Sprint 2
-        // _buildNavButton(context, 'Criar/Editar Frase', Icons.edit, () {}),
+        _buildNavButton(context, 'Criar/Editar Frase', Icons.edit_note_outlined, const PhraseScreen()),
         _buildNavButton(context, 'Ativar Ritual Diário', Icons.nightlife_outlined, const RitualScreen()),
         _buildNavButton(context, 'Ver Meu Progresso', Icons.calendar_today_outlined, const CalendarScreen()),
         _buildNavButton(context, 'Meu Diário de Sinais', Icons.book_outlined, const DiaryScreen()),

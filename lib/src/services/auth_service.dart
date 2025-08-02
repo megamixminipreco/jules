@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:manifestacao_369/src/models/user_model.dart';
+import 'package:manifestacao_369/src/services/database_service.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final DatabaseService _db = DatabaseService();
 
   // Stream para verificar o estado de autenticação do usuário
   Stream<User?> get authStateChanges => _auth.authStateChanges();
@@ -12,13 +12,11 @@ class AuthService {
   // Método de Login
   Future<UserCredential?> signInWithEmailAndPassword(String email, String password) async {
     try {
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+      return await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      return userCredential;
     } on FirebaseAuthException catch (e) {
-      // TODO: Melhorar o tratamento de erros para o usuário final
       print('Erro no login: ${e.message}');
       return null;
     }
@@ -31,25 +29,23 @@ class AuthService {
         email: email,
         password: password,
       );
-      // Após criar o usuário, salva os dados adicionais no Firestore
-      await saveUserToFirestore(userCredential.user!, name);
+
+      // Cria o modelo do usuário
+      UserModel newUser = UserModel(
+        uid: userCredential.user!.uid,
+        name: name,
+        email: email,
+        createdAt: DateTime.now(),
+      );
+
+      // Usa o DatabaseService para salvar o usuário
+      await _db.createUser(newUser);
+
       return userCredential;
     } on FirebaseAuthException catch (e) {
-      // TODO: Melhorar o tratamento de erros para o usuário final
       print('Erro no cadastro: ${e.message}');
       return null;
     }
-  }
-
-  // Método para salvar dados do usuário no Firestore
-  Future<void> saveUserToFirestore(User user, String name) async {
-    UserModel userModel = UserModel(
-      uid: user.uid,
-      name: name,
-      email: user.email!,
-      createdAt: DateTime.now(),
-    );
-    await _firestore.collection('users').doc(user.uid).set(userModel.toMap());
   }
 
   // Método de Logout
