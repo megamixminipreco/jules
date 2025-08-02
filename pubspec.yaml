@@ -1,0 +1,38 @@
+name: manifestacao_369
+description: "Um aplicativo para a prática do ritual de manifestação 3-6-9."
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.2.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Firebase
+  firebase_core: ^2.27.0
+  firebase_auth: ^4.17.8
+  cloud_firestore: ^4.15.8
+  firebase_storage: ^11.6.9 # Para o Sprint 4
+  firebase_messaging: ^14.7.20 # Para o Sprint 4
+
+  # Autenticação com Google
+  google_sign_in: ^6.2.1
+
+  # Gerenciamento de estado e navegação
+  # go_router é uma boa opção para navegação baseada em URL.
+  # Por enquanto, usaremos a navegação padrão do Flutter para simplicidade.
+
+  google_fonts: ^6.2.1
+  cupertino_icons: ^1.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
