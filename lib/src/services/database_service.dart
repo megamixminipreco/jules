@@ -41,4 +41,52 @@ class DatabaseService {
       return null;
     }
   }
+
+  String _getTodayDocId() {
+    final now = DateTime.now();
+    return "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
+  }
+
+  // Atualiza o progresso do ritual do dia
+  Future<void> updateRitualProgress(String userId, {int? morning, int? afternoon, int? evening}) async {
+    try {
+      final docId = _getTodayDocId();
+      final dataToUpdate = <String, int>{};
+      if (morning != null) dataToUpdate['morningReps'] = morning;
+      if (afternoon != null) dataToUpdate['afternoonReps'] = afternoon;
+      if (evening != null) dataToUpdate['eveningReps'] = evening;
+
+      if (dataToUpdate.isNotEmpty) {
+        await _firestore
+            .collection(_usersCollection)
+            .doc(userId)
+            .collection('progress')
+            .doc(docId)
+            .set(dataToUpdate, SetOptions(merge: true));
+      }
+    } catch (e) {
+      print('Erro ao atualizar o progresso do ritual: $e');
+    }
+  }
+
+  // Obtém o progresso do ritual do dia
+  Future<Map<String, int>?> getRitualProgress(String userId) async {
+    try {
+      final docId = _getTodayDocId();
+      final doc = await _firestore
+          .collection(_usersCollection)
+          .doc(userId)
+          .collection('progress')
+          .doc(docId)
+          .get();
+
+      if (doc.exists) {
+        return doc.data()?.cast<String, int>();
+      }
+      return null;
+    } catch (e) {
+      print('Erro ao buscar o progresso do ritual: $e');
+      return null;
+    }
+  }
 }
